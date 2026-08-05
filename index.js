@@ -5,21 +5,26 @@ class Cliente {
 }
 class ContaCorrente {
     agencia;
-    saldo;
+    // #saldo; // private field
+    _saldo;
 
     sacar(valor) {
-        if (this.saldo >= valor) {
-            this.saldo -= valor;
+        if (valor > 0 && valor <= this._saldo) {
+            this._saldo -= valor;
             return valor;
+        } else {
+            console.log("Valor inválido para saque.");
+            return;
         }
-        return 0;
+        
     }
 
     depositar(valor) {
-        if (valor <= 0) {
-            return;
+        if (valor > 0) {
+            this._saldo += valor;
+        } else {
+            console.log("Valor inválido para depósito.");
         }
-        this.saldo += valor;
     }
 }
 
@@ -34,14 +39,10 @@ cliente2.cpf = "22233344408";
 cliente2.rg = "987654321";
 
 const contaCorrenteMarcelo = new ContaCorrente();
-contaCorrenteMarcelo.saldo = 0;
+contaCorrenteMarcelo._saldo = 0;
 contaCorrenteMarcelo.agencia = 1001;
 
-console.log(contaCorrenteMarcelo.saldo);
 contaCorrenteMarcelo.depositar(100);
-console.log(contaCorrenteMarcelo.saldo);
 contaCorrenteMarcelo.sacar(50);
-console.log(contaCorrenteMarcelo.saldo);
 
-console.log(cliente1);
-console.log(cliente2);
+console.log(contaCorrenteMarcelo);
