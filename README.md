@@ -1,33 +1,42 @@
 # 🏦 Bytebank
 
-Exercício de **Programação Orientada a Objetos (POO)** em JavaScript, simulando um sistema bancário simples com clientes e contas correntes.
+Exercício de **Programação Orientada a Objetos (POO)** em JavaScript, simulando um sistema bancário simples com clientes, contas correntes, depósitos, saques e transferências.
 
-## 📁 Conteúdo
+## 📁 Estrutura do projeto
 
-| Arquivo | Descrição |
-|---|---|
-| [`index.js`](./index.js) | Classes `Cliente` e `ContaCorrente`, com operações de depósito e saque |
+```
+bytebank/
+├── Cliente.js         # Classe Cliente
+├── ContaCorrente.js   # Classe ContaCorrente
+└── index.js           # Ponto de entrada — instancia clientes e contas
+```
 
 ## 🧩 Estrutura das classes
 
-**`Cliente`**
+**`Cliente`** (`Cliente.js`)
 - `nome`
 - `cpf`
-- `rg`
 
-**`ContaCorrente`**
+**`ContaCorrente`** (`ContaCorrente.js`)
 - `agencia`
-- `saldo`
-- `depositar(valor)` — adiciona o valor ao saldo (ignora valores menores ou iguais a zero)
-- `sacar(valor)` — retira o valor do saldo se houver saldo suficiente, retornando o valor sacado (ou `0` caso não seja possível)
+- `cliente` — referência a um objeto `Cliente`
+- `_saldo` — saldo da conta (convenção de campo "privado")
+- `depositar(valor)` — adiciona o valor ao saldo (valores inválidos são rejeitados com aviso no console)
+- `sacar(valor)` — retira o valor do saldo se houver saldo suficiente, retornando o valor sacado
+- `transferir(valor, conta)` — saca o valor da conta atual e deposita em outra `ContaCorrente`
+
+**`index.js`**
+- Importa as classes via **ES Modules** (`import`/`export`)
+- Cria duas contas correntes (Marcelo e Diana), cada uma associada a um `Cliente`
+- Realiza depósitos e exibe o resultado no console
 
 ## 🎯 Objetivo
 
-Praticar os conceitos de classes, atributos, métodos e instanciação de objetos em JavaScript, simulando operações básicas de um banco.
+Praticar conceitos de POO em JavaScript — classes, encapsulamento, composição de objetos e módulos ES (`import`/`export`) — simulando operações bancárias reais, incluindo transferência entre contas.
 
 ## 🛠️ Tecnologias
 
-- **JavaScript** (POO)
+- **JavaScript** (POO + ES Modules)
 
 ## 🚀 Como executar
 
@@ -35,11 +44,15 @@ Praticar os conceitos de classes, atributos, métodos e instanciação de objeto
    ```bash
    git clone https://github.com/Juniklx/bytebank.git
    ```
-2. Execute com o Node.js:
+2. Como o projeto usa `import`/`export` (ES Modules), rode com o Node.js indicando o tipo de módulo:
+   ```bash
+   node --input-type=module index.js
+   ```
+   Ou crie um `package.json` com `"type": "module"` na raiz do projeto e rode normalmente:
    ```bash
    node index.js
    ```
 
 ## 📌 Status
 
-Projeto de estudo, com foco em fundamentos de Programação Orientada a Objetos em JavaScript.
+Projeto de estudo, com foco em fundamentos de Programação Orientada a Objetos e modularização em JavaScript.
