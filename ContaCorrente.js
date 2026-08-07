@@ -1,9 +1,10 @@
 import { Cliente } from "./Cliente.js";
 
 export class ContaCorrente {
-    agencia;
-    #cliente; // private field
-    #saldo = 0; // private field
+    static #numeroDeContas = 0; // campo estático
+    #agencia; // campo privado
+    #cliente; // campo privado
+    #saldo = 0; // campo privado
 
     set cliente(novoValor) {
         if (novoValor instanceof Cliente) {
@@ -11,6 +12,14 @@ export class ContaCorrente {
         } else {
             console.log("O valor passado não é uma instância de Cliente.");
         }
+    }
+
+    static get numeroDeContas() {
+        return ContaCorrente.#numeroDeContas;
+    }
+
+    get numeroDeContas () {
+        return 
     }
 
     get cliente() {
@@ -22,8 +31,9 @@ export class ContaCorrente {
     }
 
     constructor(agencia, cliente) {
-        this.agencia = agencia;
-        this.cliente = cliente;
+        this.#agencia = agencia;
+        this.#cliente = cliente;
+        ContaCorrente.#numeroDeContas++;
     }
 
     static formatarMoeda(valor) {
@@ -66,6 +76,4 @@ export class ContaCorrente {
             console.log("Valor inválido para transferência.");
         }
     }
-
-    
 }

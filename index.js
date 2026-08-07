@@ -13,5 +13,7 @@ contaCorrente2.depositar(200);
 // contaCorrente2.saldo = 3000; // This line will not work as intended because saldo is a getter and does not have a setter.
 
 contaCorrente2.transferir(100, contaCorrente1);
-console.log(`${cliente1.nome}: ${ContaCorrente.formatarMoeda(contaCorrente1.saldo)}`);
-console.log(`${cliente2.nome}: ${ContaCorrente.formatarMoeda(contaCorrente2.saldo)}`);  
+console.log(`Saldo da conta de ${cliente1.nome}: ${ContaCorrente.formatarMoeda(contaCorrente1.saldo)}\n`);
+console.log(`Saldo da conta de ${cliente2.nome}: ${ContaCorrente.formatarMoeda(contaCorrente2.saldo)}\n`);
+console.log(`Número de contas criadas: ${ContaCorrente.numeroDeContas}`);
+

@@ -1,6 +1,6 @@
 export class Cliente {
-    #nome;
-    #cpf;
+    #nome; // campo privado
+    #cpf; // campo privado
 
     get nome() {
         return this.#nome;
@@ -9,7 +9,7 @@ export class Cliente {
     get cpf() {
         return this.#cpf;
     }
-
+    
     constructor(nome, cpf) {
         this.#cpf = cpf;
         this.#nome = nome;
