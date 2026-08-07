@@ -14,25 +14,29 @@ bytebank/
 ## 🧩 Estrutura das classes
 
 **`Cliente`** (`Cliente.js`)
-- `nome`
-- `cpf`
+- `#nome`, `#cpf` — campos privados, definidos no construtor
+- `nome`, `cpf` — getters de leitura para os campos privados
 
 **`ContaCorrente`** (`ContaCorrente.js`)
-- `agencia`
-- `cliente` — referência a um objeto `Cliente`
-- `_saldo` — saldo da conta (convenção de campo "privado")
+- `#agencia` — campo privado, definido no construtor
+- `#cliente` — campo privado; referência a um objeto `Cliente`, com getter (`cliente`) e setter que valida se o valor recebido é uma instância de `Cliente`
+- `#saldo` — campo privado com getter (`saldo`); inicia em `0`
+- `#numeroDeContas` — campo estático privado que conta quantas contas foram criadas, exposto pelo getter estático `numeroDeContas`
 - `depositar(valor)` — adiciona o valor ao saldo (valores inválidos são rejeitados com aviso no console)
-- `sacar(valor)` — retira o valor do saldo se houver saldo suficiente, retornando o valor sacado
-- `transferir(valor, conta)` — saca o valor da conta atual e deposita em outra `ContaCorrente`
+- `sacar(valor)` — retira o valor do saldo se houver saldo suficiente, retornando o valor sacado (senão avisa no console)
+- `transferir(valor, conta)` — saca o valor da conta atual e deposita em outra `ContaCorrente`, avisando no console sobre a transferência ou sobre saldo insuficiente
+- `formatarMoeda(valor)` — método estático que formata um número como moeda brasileira (`R$`, padrão `pt-BR`)
 
 **`index.js`**
 - Importa as classes via **ES Modules** (`import`/`export`)
 - Cria duas contas correntes (Marcelo e Diana), cada uma associada a um `Cliente`
-- Realiza depósitos e exibe o resultado no console
+- Realiza depósitos nas duas contas
+- Transfere um valor da conta de Diana para a de Marcelo
+- Exibe no console os saldos finais formatados em reais e o número total de contas criadas
 
 ## 🎯 Objetivo
 
-Praticar conceitos de POO em JavaScript — classes, encapsulamento, composição de objetos e módulos ES (`import`/`export`) — simulando operações bancárias reais, incluindo transferência entre contas.
+Praticar conceitos de POO em JavaScript — classes, encapsulamento com campos e métodos privados/estáticos, composição de objetos e módulos ES (`import`/`export`) — simulando operações bancárias reais, incluindo transferência entre contas e formatação de valores monetários.
 
 ## 🛠️ Tecnologias
 
@@ -53,6 +57,6 @@ Praticar conceitos de POO em JavaScript — classes, encapsulamento, composiçã
    node index.js
    ```
 
-## 📌 Status
+## 📌 Sobre
 
 Projeto de estudo, com foco em fundamentos de Programação Orientada a Objetos e modularização em JavaScript.
