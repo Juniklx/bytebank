@@ -1,30 +1,41 @@
 import { Cliente } from "./Cliente.js";
+
 export class ContaCorrente {
     agencia;
-    _cliente; // private field
+    #cliente; // private field
+    #saldo = 0; // private field
 
     set cliente(novoValor) {
         if (novoValor instanceof Cliente) {
-            this._cliente = novoValor;
+            this.#cliente = novoValor;
         } else {
             console.log("O valor passado não é uma instância de Cliente.");
         }
     }
 
     get cliente() {
-        return this._cliente;
+        return this.#cliente;
     }
-
-
-    _saldo = 0; // private field
 
     get saldo() {
-        return this._saldo;
+        return this.#saldo;
     }
 
+    constructor(agencia, cliente) {
+        this.agencia = agencia;
+        this.cliente = cliente;
+    }
+
+    static formatarMoeda(valor) {
+            return valor.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
+        }
+
     sacar(valor) {
-        if (valor > 0 && valor <= this._saldo) {
-            this._saldo -= valor;
+        if (valor > 0 && valor <= this.#saldo) {
+            this.#saldo -= valor;
             return valor;
         } else {
             console.log("Valor inválido para saque.");
@@ -34,26 +45,27 @@ export class ContaCorrente {
 
     depositar(valor) {
         if (valor > 0) {
-            this._saldo += valor;
+            this.#saldo += valor;
         } else {
             console.log("Valor inválido para depósito.");
         }
     }
 
     transferir(valor, conta) {
-        if (valor > 0 && valor <= this._saldo) {
+        if (valor > 0 && valor <= this.#saldo) {
             console.log(
-                `Transferindo ${valor} da conta de ${this._cliente.nome} para a conta de ${conta._cliente.nome}.`,
+                `Transferindo ${ContaCorrente.formatarMoeda(valor)} da conta de ${this.#cliente.nome} para a conta de ${conta.#cliente.nome}.`,
             );
             const valorSacado = this.sacar(valor);
             conta.depositar(valorSacado);
-        } else if (valor - this._saldo > 0) {
+        } else if (valor - this.#saldo > 0) {
             console.log(
-                `${this._cliente.nome} não possui saldo suficiente para transferência.`,
+                `${this.#cliente.nome} não possui saldo suficiente para transferência.`,
             );
         } else {
             console.log("Valor inválido para transferência.");
         }
     }
 
+    
 }

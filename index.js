@@ -1,24 +1,17 @@
 import { Cliente } from "./Cliente.js";
 import { ContaCorrente } from "./ContaCorrente.js";
 
-const clienteMarcelo = new Cliente();
-clienteMarcelo.nome = "Marcelo";
-clienteMarcelo.cpf = "11122233309";
-const contaCorrenteMarcelo = new ContaCorrente();
-contaCorrenteMarcelo.cliente = clienteMarcelo;
-contaCorrenteMarcelo.agencia = 1001;
-contaCorrenteMarcelo.depositar(100);
-// contaCorrenteMarcelo.saldo = 30000; // This line will not work as intended because saldo is a getter and does not have a setter.
+const cliente1 = new Cliente("Marcelo", "111.222.333-09");
+const cliente2 = new Cliente("Diana", "222.333.444-08");
 
-const clienteDiana = new Cliente();
-clienteDiana.nome = "Diana";
-clienteDiana.cpf = "22233344408";
-const contaCorrenteDiana = new ContaCorrente();
-contaCorrenteDiana.cliente = clienteDiana;
-contaCorrenteDiana.agencia = 1001;
-contaCorrenteDiana.depositar(200);
-// contaCorrenteDiana.saldo = 3000; // This line will not work as intended because saldo is a getter and does not have a setter.
+const contaCorrente1 = new ContaCorrente(1001, cliente1);
+const contaCorrente2 = new ContaCorrente(1001, cliente2);
 
-contaCorrenteDiana.transferir(100, contaCorrenteMarcelo);
-console.log(`${clienteMarcelo.nome}: ${contaCorrenteMarcelo.saldo}`);
-console.log(`${clienteDiana.nome}: ${contaCorrenteDiana.saldo}`);
+contaCorrente1.depositar(100);
+// contaCorrente1.saldo = 30000; // This line will not work as intended because saldo is a getter and does not have a setter.
+contaCorrente2.depositar(200);
+// contaCorrente2.saldo = 3000; // This line will not work as intended because saldo is a getter and does not have a setter.
+
+contaCorrente2.transferir(100, contaCorrente1);
+console.log(`${cliente1.nome}: ${ContaCorrente.formatarMoeda(contaCorrente1.saldo)}`);
+console.log(`${cliente2.nome}: ${ContaCorrente.formatarMoeda(contaCorrente2.saldo)}`);  
