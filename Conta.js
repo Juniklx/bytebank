@@ -1,6 +1,4 @@
-import { Cliente } from "./Cliente.js";
-
-export class ContaCorrente {
+export class Conta {
     static #numeroDeContas = 0; // campo estático
     #agencia; // campo privado
     #cliente; // campo privado
@@ -18,8 +16,8 @@ export class ContaCorrente {
         return Conta.#numeroDeContas;
     }
 
-    get numeroDeContas () {
-        return 
+    get numeroDeContas() {
+        return;
     }
 
     get cliente() {
@@ -34,15 +32,15 @@ export class ContaCorrente {
         this.#agencia = agencia;
         this.#cliente = cliente;
         this.#saldo = saldo;
-        ContaCorrente.#numeroDeContas++;
+        Conta.#numeroDeContas++;
     }
 
     static formatarMoeda(valor) {
-            return valor.toLocaleString('pt-BR', {
-                style: 'currency',
-                currency: 'BRL'
-            });
-        }
+        return valor.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+        });
+    }
 
     sacar(valor) {
         if (valor > 0 && valor <= this.#saldo) {
