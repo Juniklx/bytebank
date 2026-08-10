@@ -4,16 +4,20 @@ export class Conta {
     #cliente; // campo privado
     #saldo; // campo privado
 
+
+    constructor(agencia, cliente, saldo) {
+        this.#agencia = agencia;
+        this.#cliente = cliente;
+        this.#saldo = saldo;
+    }
+
+
     set cliente(novoValor) {
         if (novoValor instanceof Cliente) {
             this.#cliente = novoValor;
         } else {
             console.log("O valor passado não é uma instância de Cliente.");
         }
-    }
-
-    static get numeroDeContas() {
-        return Conta.#numeroDeContas;
     }
 
     get numeroDeContas() {
@@ -28,13 +32,6 @@ export class Conta {
         return this.#saldo;
     }
 
-    constructor(agencia, cliente, saldo) {
-        this.#agencia = agencia;
-        this.#cliente = cliente;
-        this.#saldo = saldo;
-        Conta.#numeroDeContas++;
-    }
-
     static formatarMoeda(valor) {
         return valor.toLocaleString("pt-BR", {
             style: "currency",
@@ -44,8 +41,8 @@ export class Conta {
 
     sacar(valor) {
         if (valor > 0 && valor <= this.#saldo) {
-            this.#saldo -= valor;
-            return valor;
+            this.#saldo -= valorSacado;
+            return valorSacado;
         } else {
             console.log("Valor inválido para saque.");
             return;
