@@ -1,16 +1,15 @@
 export class Conta {
-    static #numeroDeContas = 0; // campo estático
     #agencia; // campo privado
     #cliente; // campo privado
     #saldo; // campo privado
+    #taxaSaque = 0; // campo privado
 
-
-    constructor(agencia, cliente, saldo) {
+    constructor(agencia, cliente, saldo, taxaSaque = 0) {
         this.#agencia = agencia;
         this.#cliente = cliente;
         this.#saldo = saldo;
+        this.#taxaSaque = taxaSaque
     }
-
 
     set cliente(novoValor) {
         if (novoValor instanceof Cliente) {
@@ -20,8 +19,12 @@ export class Conta {
         }
     }
 
-    get numeroDeContas() {
-        return;
+    get tipoConta() {
+        return "conta";
+    }
+
+    get agencia() {
+        return this.#agencia;
     }
 
     get cliente() {
@@ -32,6 +35,15 @@ export class Conta {
         return this.#saldo;
     }
 
+    get taxaSaque() {
+        return this.#taxaSaque;
+    }
+
+    set saldo(valor) {
+        this.#saldo = valor;
+    }
+
+
     static formatarMoeda(valor) {
         return valor.toLocaleString("pt-BR", {
             style: "currency",
@@ -40,9 +52,19 @@ export class Conta {
     }
 
     sacar(valor) {
-        if (valor > 0 && valor <= this.#saldo) {
-            this.#saldo -= valorSacado;
-            return valorSacado;
+        const valorComTaxa = valor * (1 + this.taxaSaque);
+        const valorTaxa = valorComTaxa - valor;
+
+        if (valor > 0 && valorComTaxa <= this.saldo) {
+            this.saldo -= valorComTaxa;
+            const mensagemTaxa =
+                this.taxaSaque > 0
+                    ? ` + taxa de ${this.taxaSaque * 100}% (${Conta.formatarMoeda(valorTaxa)})`
+                    : "";
+            console.log(
+                `Sacando ${Conta.formatarMoeda(valor)}${mensagemTaxa} da ${this.tipoConta} de ${this.cliente.nome}.`,
+            );
+            return valor;
         } else {
             console.log("Valor inválido para saque.");
             return;
@@ -60,7 +82,7 @@ export class Conta {
     transferir(valor, conta) {
         if (valor > 0 && valor <= this.#saldo) {
             console.log(
-                `Transferindo ${ContaCorrente.formatarMoeda(valor)} da conta de ${this.#cliente.nome} para a conta de ${conta.#cliente.nome}.`,
+                `Transferindo ${Conta.formatarMoeda(valor)} da conta de ${this.#cliente.nome} para a conta de ${conta.cliente.nome}.`,
             );
             const valorSacado = this.sacar(valor);
             conta.depositar(valorSacado);
