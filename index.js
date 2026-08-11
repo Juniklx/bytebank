@@ -1,24 +1,18 @@
 import { Cliente } from "./Cliente.js";
-import { ContaCorrente } from "./ContaCorrente.js";
-import { ContaPoupanca } from "./ContaPoupanca.js";
+import { Gerente } from "./Funcionarios/Gerente.js"
+import { Diretor } from "./Funcionarios/Diretor.js"
+import { SistemaAutenticacao } from "./SistemaAutenticacao.js"
 
-const cliente1 = new Cliente("Marcelo", "111.222.333-09");
-const cliente2 = new Cliente("Diana", "222.333.444-08");
+const diretor = new Diretor("Marcelo", 10000, "123.456.789-00");
+diretor.cadastrarSenha("123456");
 
-const contaCorrenteMarcelo = new ContaCorrente(1001, cliente1, 0)
+const gerente = new Gerente("Diana", 5000, "987.654.321-00");
+gerente.cadastrarSenha("123")
 
-const contaPoupancaMarcelo = new ContaPoupanca(1001, cliente1, 0);
+const cliente = new Cliente("Junior", "456.789.123-00", "12345")
 
-contaCorrenteMarcelo.depositar(1000);
-contaPoupancaMarcelo.depositar(500);
+const clienteEstaLogado = SistemaAutenticacao.login(cliente, "12345");
+const gerenteEstaLogado = SistemaAutenticacao.login(gerente, "123");
+const diretorEstaLogado = SistemaAutenticacao.login(diretor, "123456");
 
-contaCorrenteMarcelo.sacar(100);
-contaPoupancaMarcelo.sacar(100);
-
-console.log(
-    `Saldo da conta corrente de ${cliente1.nome}: ${ContaCorrente.formatarMoeda(contaCorrenteMarcelo.saldo)}`,
-);
-
-console.log(
-    `Saldo da conta poupança de ${cliente1.nome}: ${ContaCorrente.formatarMoeda(contaPoupancaMarcelo.saldo)}`,
-);
+console.log(clienteEstaLogado, gerenteEstaLogado, diretorEstaLogado);

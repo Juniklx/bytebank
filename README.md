@@ -1,57 +1,83 @@
 # 🏦 Bytebank
 
-Exercício de **Programação Orientada a Objetos (POO)** em JavaScript, simulando um sistema bancário simples com clientes, contas (corrente e poupança), depósitos, saques e transferências.
+Exercício de **Programação Orientada a Objetos (POO)** em JavaScript, simulando um sistema bancário simples com clientes, funcionários, contas (corrente, poupança e salário), depósitos, saques, transferências e autenticação.
 
 ## 📁 Estrutura do projeto
 
 ```
 bytebank/
-├── Cliente.js         # Classe Cliente
-├── Conta.js            # Classe base Conta (encapsula saldo, saque, depósito, transferência)
-├── ContaCorrente.js    # Subclasse de Conta — taxa de saque de 10%
-├── ContaPoupanca.js     # Subclasse de Conta — taxa de saque de 5%
-└── index.js            # Ponto de entrada — instancia clientes e contas
+├── Cliente.js                    # Classe Cliente
+├── SistemaAutenticacao.js        # Login via duck typing (qualquer objeto "autenticável")
+├── index.js                      # Ponto de entrada
+├── Conta/
+│   ├── Conta.js                  # Classe base abstrata (encapsula saldo, saque, depósito, transferência)
+│   ├── ContaCorrente.js          # Subclasse de Conta — taxa de saque de 10%
+│   ├── ContaPoupanca.js          # Subclasse de Conta — taxa de saque de 2%
+│   └── ContaSalario.js           # Subclasse de Conta — sem taxa de saque
+└── Funcionarios/
+    ├── Funcionarios.js           # Classe base Funcionario
+    ├── Gerente.js                # Subclasse de Funcionario — bonificação 1.1x
+    └── Diretor.js                # Subclasse de Funcionario — bonificação 2x
 ```
 
 ## 🧩 Estrutura das classes
 
 **`Cliente`** (`Cliente.js`)
 
-- `#nome`, `#cpf` — campos privados, definidos no construtor
+- `#nome`, `#cpf`, `#senha` — campos privados, definidos no construtor
 - `nome`, `cpf` — getters de leitura para os campos privados
+- `autenticar(senha)` — compara a senha recebida com a senha cadastrada
 
-**`Conta`** (`Conta.js`) — classe base, não é instanciada diretamente
+**`Conta`** (`Conta/Conta.js`) — classe base abstrata, não pode ser instanciada diretamente (o construtor lança erro se `this.constructor === Conta`)
 
-- `#agencia`, `#cliente`, `#saldo`, `#taxaSaque` — campos privados, definidos no construtor
+- `#agencia`, `#cliente`, `#saldo` — campos privados, definidos no construtor
 - `cliente` — getter/setter; o setter valida se o valor recebido é uma instância de `Cliente`
-- `agencia`, `saldo`, `taxaSaque` — getters de leitura
+- `agencia`, `saldo` — getters de leitura (`saldo` não tem setter público — só é alterado internamente por `sacar`/`depositar`, para não permitir que código externo sobrescreva o saldo sem passar pelas regras de negócio)
 - `tipoConta` — getter que retorna `"conta"`; sobrescrito pelas subclasses para identificar o tipo nas mensagens de log
+- `sacar(valor, taxaSaque = 0)` — retira o valor do saldo aplicando a taxa recebida (cada subclasse chama `super.sacar()` passando sua própria taxa), retornando o valor sacado em caso de sucesso ou `undefined` caso contrário
 - `depositar(valor)` — adiciona o valor ao saldo (valores inválidos são rejeitados com aviso no console)
-- `sacar(valor)` — retira o valor do saldo (aplicando a `taxaSaque` da conta) se houver saldo suficiente, retornando o valor sacado (senão avisa no console)
-- `transferir(valor, conta)` — saca o valor da conta atual e deposita em outra conta, avisando no console sobre a transferência ou sobre saldo insuficiente
+- `transferir(valor, conta)` — saca o valor da conta atual (considerando a taxa da subclasse) e só deposita na conta de destino se o saque realmente aconteceu
 - `formatarMoeda(valor)` — método estático que formata um número como moeda brasileira (`R$`, padrão `pt-BR`)
 
-**`ContaCorrente`** (`ContaCorrente.js`) — herda de `Conta`
+**`ContaCorrente`** (`Conta/ContaCorrente.js`) — herda de `Conta`
 
-- Define `taxaSaque` como `10%`, passada ao construtor da classe base via `super()`
-- `#numeroDeContas` — campo estático privado que conta quantas contas correntes foram criadas
+- Taxa de saque de **10%**
+- `#numeroDeContas` — campo estático privado, incrementado no construtor; exposto via `ContaCorrente.numeroDeContas`
 - Sobrescreve `tipoConta` para `"conta corrente"`
 
-**`ContaPoupanca`** (`ContaPoupanca.js`) — herda de `Conta`
+**`ContaPoupanca`** (`Conta/ContaPoupanca.js`) — herda de `Conta`
 
-- Define `taxaSaque` como `5%`, passada ao construtor da classe base via `super()`
+- Taxa de saque de **2%**
 - Sobrescreve `tipoConta` para `"conta poupança"`
+
+**`ContaSalario`** (`Conta/ContaSalario.js`) — herda de `Conta`
+
+- Sem taxa de saque (0%)
+- Sobrescreve `tipoConta` para `"conta salário"`
+
+**`Funcionario`** (`Funcionarios/Funcionarios.js`)
+
+- `#nome`, `#salario`, `#cpf`, `#bonificacao`, `#senha` — campos privados
+- `nome`, `cpf`, `bonificacao` — getters de leitura
+- `bonificacao` — setter, valida se o valor é um número não-negativo
+- `cadastrarSenha(senha)` / `autenticar(senha)` — cadastro e verificação de senha
+
+**`Gerente`** e **`Diretor`** (`Funcionarios/Gerente.js`, `Funcionarios/Diretor.js`) — herdam de `Funcionario`, definindo `bonificacao` como `1.1` e `2`, respectivamente
+
+**`SistemaAutenticacao`** (`SistemaAutenticacao.js`)
+
+- `login(autenticavel, senha)` — autentica qualquer objeto que tenha um método `autenticar` (duck typing), não apenas `Cliente` ou `Funcionario`
+- `ehAutenticavel(autenticavel)` — verifica se o objeto possui o método `autenticar`
 
 **`index.js`**
 
 - Importa as classes via **ES Modules** (`import`/`export`)
-- Cria uma conta corrente e uma conta poupança para o mesmo cliente (Marcelo)
-- Realiza depósitos e saques nas duas contas (cada uma aplicando sua própria taxa)
-- Exibe no console os saldos finais formatados em reais
+- Cria um diretor, uma gerente e um cliente, cada um com sua própria senha
+- Testa o login dos três através de `SistemaAutenticacao.login`
 
 ## 🎯 Objetivo
 
-Praticar conceitos de POO em JavaScript — classes, herança (`extends`/`super`), encapsulamento com campos e métodos privados/estáticos, polimorfismo (sobrescrita de getters entre subclasses), composição de objetos e módulos ES (`import`/`export`) — simulando operações bancárias reais com diferentes tipos de conta, taxas de saque, transferência entre contas e formatação de valores monetários.
+Praticar conceitos de POO em JavaScript — classes, herança (`extends`/`super`), encapsulamento com campos e métodos privados/estáticos, polimorfismo (sobrescrita de getters e métodos entre subclasses), duck typing, composição de objetos e módulos ES (`import`/`export`) — simulando operações bancárias reais com diferentes tipos de conta e funcionário, taxas de saque, transferência entre contas, autenticação e formatação de valores monetários.
 
 ## 🛠️ Tecnologias
 
@@ -59,18 +85,11 @@ Praticar conceitos de POO em JavaScript — classes, herança (`extends`/`super`
 
 ## 🚀 Como executar
 
-1. Clone o repositório:
-    ```bash
-    git clone https://github.com/Juniklx/bytebank.git
-    ```
-2. Como o projeto usa `import`/`export` (ES Modules), rode com o Node.js indicando o tipo de módulo:
-    ```bash
-    node --input-type=module index.js
-    ```
-    Ou crie um `package.json` com `"type": "module"` na raiz do projeto e rode normalmente:
-    ```bash
-    node index.js
-    ```
+O projeto já tem um `package.json` com `"type": "module"`, então basta rodar:
+
+```bash
+node index.js
+```
 
 ## 📌 Sobre
 

@@ -1,0 +1,7 @@
+{
+  "name": "bytebank",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Exercício de POO em JavaScript simulando um sistema bancário simples.",
+  "main": "index.js"
+}
